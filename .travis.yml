@@ -1,0 +1,19 @@
+# Ubuntu 14.04+ is required to run Docker
+dist: trusty
+
+# sudo permission are needed to use Nanobox's CI bootstrap script.
+sudo: required
+
+# Download and install Nanobox on the CI server
+install: sudo bash -c "$(curl -fsSL https://s3.amazonaws.com/tools.nanobox.io/bootstrap/ci.sh)"
+
+# Run tests with Nanobox
+script:
+  - nanobox run mix test
+
+# Add a live app as a remote and deploy to it if tests pass
+# This assumes the NANOBOX_USERNAME and NANOBOX_PASSWORD
+# environment variable are set on the CI server
+after_success:
+  - nanobox remote add app-name
+  - nanobox deploy
